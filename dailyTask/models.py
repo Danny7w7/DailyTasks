@@ -12,7 +12,7 @@ class Users(AbstractUser):
     legend = models.TextField(null=True)
 
     def __str__(self):
-        return self.username
+        return f'{self.id} - {self.username}'
     
 class Tasks(models.Model):
     title = models.CharField(max_length=60)
@@ -26,6 +26,9 @@ class Tasks(models.Model):
     )
     is_active = models.BooleanField()
 
+    def __str__(self):
+        return f'{self.id} - {self.title} - Assigned to {self.assigned_to.username}'
+
 class Response(models.Model):
     task = models.ForeignKey(Tasks, related_name='responses', on_delete=models.CASCADE)
     user = models.ForeignKey(Users, related_name='responses', on_delete=models.CASCADE)
@@ -35,10 +38,13 @@ class Response(models.Model):
     delayed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"ID {self.id} Response {self.user.username} to {self.task.title}"
+        return f"{self.id} - {self.task.title} to {self.user.username}"
     
 class Score(models.Model):
     score = models.PositiveSmallIntegerField()
     scored_by = models.ForeignKey(Users, on_delete=models.CASCADE)
     response_scoring = models.OneToOneField(Response, on_delete=models.CASCADE)
     scored_date = models.DateField()
+    
+    def __str__(self):
+        return f'{self.id} - {self.score} - "{self.response_scoring.response_text}" to {self.response_scoring.task.title}'
