@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const dayIndex = response.day;
                 
                 // Asegurarse de que el índice 'dayIndex' esté dentro del rango del array
-                if (dayIndex < days.length) {
+                if (dayIndex < days.length && response.completed) {
                     contForDay[dayIndex] += 1;
                     average = (days[dayIndex] + response.score) / contForDay[dayIndex];
                     days[dayIndex] = parseFloat(average.toFixed(1));
