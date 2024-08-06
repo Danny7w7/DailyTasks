@@ -1,0 +1,208 @@
+{% load static %}
+{% load custom_tags %}
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Daily Task</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <link rel="icon" href="https://bluestreammarketing.com.co/wp-content/uploads/2022/12/favicon-150x150.png" sizes="32x32">
+        
+        <!-- Bootstrap CSS v5.2.1 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+        
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    </head>
+    <body class="dark-blue container-fluid nunito-font">
+        <header class="container-fluid">
+            <div class="row light-sky-blue mt-5 ms-5 me-5 p-4">
+                <div class="d-flex col justify-content-end">
+                    <a class="text_decoration_none" href="{% url 'logout' %}">
+                        <span class="material-symbols-outlined">logout</span>
+                    </a>
+                    {% if delayed_responses %}
+                    <a class="text_decoration_none" data-bs-toggle="modal" data-bs-target="#delayedTasks">
+                        <span class="material-symbols-outlined">notifications_unread</span>
+                    </a>
+                    {% else %}
+                    <a class="text_decoration_none" data-bs-toggle="modal" data-bs-target="#noDelayedTasks">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="col-12">
+                    <h4 class="text-dark-blue text-center mt-4 line"><strong>Task Checklist</strong></h4>
+                </div>
+                <div class="col-6 mt-2 mb-3">
+                    <label class="form-label text-dark-blue">Employee</label>
+                    <input readonly type="text" class="form-control form-control-sm" value="{{user.first_name}} {{user.last_name}}"/>
+                </div>
+                <div class="col-6 mt-2 mb-3">
+                    <label class="form-label text-dark-blue">Date</label>
+                    <input type="date" class="form-control form-control-sm" name=""/>
+                </div>
+                <div class="col-12">
+                    <p class="line mt-3"></p>
+                </div>
+            </div>
+        </header>
+        <main class="container-fluid">
+            <div class="row light-sky-blue ms-5 me-5 p-4">
+                <div class="col-12">
+                    <p class="text-dark-blue">{{user.first_name}} {{user.last_name}} - {{user.legend}}</p>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="col-12 table-responsive">
+                        <table class="table1 table-list">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="dark-blue-2 text-table border-top-left-radius">Completed</th>
+                                    <th class="dark-blue-2 text-table border-top-right-radius">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                    {% if task.is_active %}
+                                        <tr class="">
+                                            <td class="dark-blue-2 text-table border-{% if task.id == first_active_task %}top{% elif task.id == last_active_task %}bottom{% else %}xd{% endif %}-left-radius">{{ task.title }}</td>
+                                            <td class="text-center">
+                                                <input name="checkTask{{ task.id }}" type="checkbox" class="custom-checkbox" 
+                                                {% if latest_responses|get_item:task.id|get_item:'completed' %}checked{% endif %}>
+                                            </td>
+                                            <td>
+                                                <input name="noteTask{{ task.id }}" class="custom-input" type="text" value="{{ latest_responses|get_item:task.id|get_item:'response_text'|default:'' }}">
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <p class="text-dark-blue">Score by Immediate Supervisor</p>
+                    </div>
+                    <div class="radio-container">
+                        <input disabled type="radio" id="radio1" name="rating" value="1">
+                        <label for="radio1">1</label>
+                        
+                        <input disabled type="radio" id="radio2" name="rating" value="2">
+                        <label for="radio2">2</label>
+                        
+                        <input disabled type="radio" id="radio3" name="rating" value="3">
+                        <label for="radio3">3</label>
+                        
+                        <input disabled type="radio" id="radio4" name="rating" value="4">
+                        <label for="radio4">4</label>
+                        
+                        <input disabled type="radio" id="radio5" name="rating" value="5">
+                        <label for="radio5">5</label>
+                        
+                        <input disabled type="radio" id="radio6" name="rating" value="6">
+                        <label for="radio6">6</label>
+                        
+                        <input disabled type="radio" id="radio7" name="rating" value="7">
+                        <label for="radio7">7</label>
+                        
+                        <input disabled type="radio" id="radio8" name="rating" value="8">
+                        <label for="radio8">8</label>
+                        
+                        <input disabled type="radio" id="radio9" name="rating" value="9">
+                        <label for="radio9">9</label>
+                        
+                        <input disabled type="radio" id="radio10" name="rating" value="10">
+                        <label for="radio10">10</label>
+                    </div>
+                    <div class="col-12">
+                        <p class="line mt-3"></p>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn dark-blue-2 text-table ps-5 pe-5">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <footer>
+            <!-- place footer here -->
+        </footer>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="noDelayedTasks" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="container-fluid text-dark-blue">You have no pending tasks, keep it up!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="delayedTasks" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h4 class="mb-4 text-center text-dark-blue"><strong>Pending Tasks</strong></h4>
+                        <div class="container-fluid">
+                            <form action="{% url 'response_pending_tasks' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="col-12 table-responsive">
+                                    <table class="table2 table-list">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th class="dark-blue-2 text-table border-top-left-radius">Completed</th>
+                                                <th class="dark-blue-2 text-table">Notes</th>
+                                                <th class="dark-blue-2 text-table border-top-right-radius">Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for response in delayed_responses.values %}
+                                                <input type="hidden" name="id" value="{{response.id}}">
+                                                <tr class="">
+                                                    <td class="dark-blue-2 text-table border-left-radius">{{ response.task_title }}</td>
+                                                    <td class="text-center">
+                                                        <input name="checkResponse{{response.id}}" type="checkbox" class="custom-checkbox">
+                                                    </td>
+                                                    <td>
+                                                        <input name="noteResponse{{response.id}}" class="custom-input" type="text" value="{{response.response_text}}">
+                                                    </td>
+                                                    <td>
+                                                        {{response.created_at}}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-12">
+                                    <p class="line mt-3"></p>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn dark-blue-2 text-table ps-5 pe-5">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Bootstrap JavaScript Libraries -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"
+        ></script>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>

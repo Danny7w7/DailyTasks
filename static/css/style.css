@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+.nunito-font {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+.dark-blue{
+    background-color: #367c96;
+}
+.light-sky-blue{
+    background-color: #f5fdff;
+}
+.text-dark-blue{
+    color: #005875;
+}
+.text-table{
+    color: white;
+}
+.line{
+    border-bottom: solid 2px #005875;
+}
+.form-control{
+    border: solid 2px #005875;
+}
+.form-control:disabled{
+    background-color: white;
+}
+.dark-blue-2{
+    background-color: #005875;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 2px solid #005875;
+    padding: 8px;
+}
+/* Estilos para la primera tabla */
+.table1 th:first-child, .table1 td:first-child {
+    width: 50%;
+}
+.table1 th:nth-child(2), .table1 td:nth-child(2) {
+    width: 5%;
+}
+.table1 th:nth-child(3), .table1 td:nth-child(3) {
+    width: 45%;
+}
+
+/* Estilos para la segunda tabla */
+.table2 th:first-child, .table2 td:first-child {
+    width: 45%;
+}
+.table2 th:nth-child(2), .table2 td:nth-child(2) {
+    width: 3%;
+}
+.table2 th:nth-child(3), .table2 td:nth-child(3) {
+    width: 35%;
+}
+.table2 th:nth-child(4), .table2 td:nth-child(4) {
+    width: 15%;
+}
+/* Quitar el borde de toda la primera columna */
+th:first-child, td:first-child {
+    border: none;
+}
+/* Quitar el borde de toda la primera fila */
+thead th, tbody{
+    border: none;
+}
+.border-top-left-radius{
+    border-top-left-radius: 10px;
+}
+.border-top-right-radius{
+    border-top-right-radius: 10px;
+}
+.border-bottom-left-radius{
+    border-bottom-left-radius: 10px;
+}
+/* Radio buttons */
+.radio-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.radio-container input[type="radio"] {
+    display: none;
+}
+.radio-container label {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin: 0 2%;
+    color: white;
+    background-color: #7aaaba;
+    border: 2px solid #005875;
+    border-radius: 50%;
+    cursor: pointer;
+    text-align: center;
+    line-height: 40px;
+    font-size: 16px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+.radio-container input[type="radio"]:checked + label {
+    background-color: #005875;
+    border-color: #007bff;
+    color: #fff;
+}
+.custom-input{
+    width: 100%;
+    border: 0px;
+    background-color: #f5fdff;
+}
+.custom-input:focus{
+    border: 0px;
+}
+.custom-checkbox {
+    appearance: none;
+    width: 23px;
+    height: 23px;
+    border: 3px solid #005875;
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+}
+.custom-checkbox:checked {
+    background-color: #005875;
+}
+.custom-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 6px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.text_decoration_none{
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}

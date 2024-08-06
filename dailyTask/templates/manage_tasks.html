@@ -1,0 +1,120 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Manage Tasks</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <link rel="icon" href="https://bluestreammarketing.com.co/wp-content/uploads/2022/12/favicon-150x150.png" sizes="32x32">
+        
+        <!-- Bootstrap CSS v5.2.1 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+
+    <body class="dark-blue container-fluid nunito-font">
+        <header class="container-fluid">
+            <form action="" method="post">
+                <div class="row light-sky-blue mt-5 ms-5 me-5 p-4">
+                    {% csrf_token %}
+                    <div class="col-12">
+                        <h4 class="text-dark-blue text-center mt-4 line"><strong>Manage Tasks</strong></h4>
+                    </div>
+                    
+                    <div class="col-6 mt-2 mb-3">
+                        <label class="form-label text-dark-blue">Employee</label>
+                        <select class="form-control form-select-sm" name="employee">
+                            <option selected>Select one</option>
+                            {% for user in users %}
+                            {% if not user.is_staff %}
+                            <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-6 mt-2 mb-3">
+                        <label class="form-label text-dark-blue">Period</label>
+                        <select class="form-control form-select-sm" name="period">
+                            <option selected>Select one</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mt-2 mb-3">
+                        <label class="form-label text-dark-blue">Task</label>
+                        <label for="" class="form-label"></label>
+                        <textarea class="form-control" name="task" rows="3"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <p class="line mt-3"></p>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn dark-blue-2 text-table ps-5 pe-5">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </header>
+        <main class="container-fluid"> 
+            <div class="row light-sky-blue mt-5 ms-5 me-5 p-4 text-center justify-content-center">
+                <div class="col-12">
+                    <h4 class="text-dark-blue text-center mt-4 line"><strong>Tasks manager</strong></h4>
+                </div>
+                {% for user in users %}
+                {% if not user.is_staff %}
+                <div class="col-3"> 
+                    <button type="button" class="btn dark-blue-2 text-table ps-5 pe-5" data-bs-toggle="modal" data-bs-target="#modalUserID{{user.id}}">{{user.first_name}} {{user.last_name}}</button>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </main>
+        <footer>
+            <!-- place footer here -->
+        </footer>
+        
+        <!-- Modal Body -->
+        {% for user, tasks in user_tasks.items %}
+        {% if not user.is_staff %}
+        <div class="modal fade" id="modalUserID{{user.id}}" tabindex="-1"  data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true" >
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document" >
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <table class="table-list mb-3">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="dark-blue-2 text-table border-top-left-radius border-top-right-radius">Active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                <tr class="">
+                                    <td class="dark-blue-2 text-table border-{% if forloop.first %}top{% elif forloop.last %}bottom{% else %}xd{% endif %}-left-radius">{{task.title}}</td>
+                                    <td class="text-center">
+                                        <input id="taskId{{task.id}}" type="checkbox" class="custom-checkbox" {% if task.is_active %} checked {% endif %}>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="col-12 text-center">
+                            <aclass="btn dark-blue-2 text-table ps-5 pe-5" href="{% url 'scoring_task' user.username %}" role="button">Scoring {{user.first_name}}'s tasks</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        
+        <!-- Bootstrap JavaScript Libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous" ></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous" ></script>
+    
+        <script src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>

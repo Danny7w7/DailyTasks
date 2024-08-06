@@ -1,0 +1,64 @@
+<!-- {% load static %} -->
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Manage Tasks</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <link rel="icon" href="https://bluestreammarketing.com.co/wp-content/uploads/2022/12/favicon-150x150.png" sizes="32x32">
+        
+        <!-- Bootstrap CSS v5.2.1 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+
+    <body class="dark-blue container-fluid nunito-font">
+        <header class="container-fluid">
+            <div class="row light-sky-blue mt-5 ms-5 me-5 p-4">
+   
+            </div>
+        </header>
+        <main class="container-fluid"> 
+            <div class="row mt-5 ms-5 me-5 text-center justify-content-center">
+                <div class="col-12 light-sky-blue p-4 mb-4 rounded-5" id="mainChart"></div>
+                {% for user in users %}
+                <div class="col-4 p-1 ">
+                    <div class="light-sky-blue rounded-top-5 ">{{user.first_name}} {{user.last_name}}</div>
+                    <div id="userChartTasks{{user.username}}" class="light-sky-blue"></div>
+                    <div class="light-sky-blue rounded-bottom-5">
+                        <button type="button" class="btn dark-blue-2 text-table ps-5 pe-5 mb-3" data-bs-toggle="modal" data-bs-target="#modalUserID{{user.id}}">Score</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+        <footer>
+            <!-- place footer here -->
+        </footer>
+        <!-- Modal trigger button -->
+        
+        {% for user in users %}
+        <div class="modal fade" id="modalUserID{{user.id}}" tabindex="-1"  data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true" >
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document" >
+                <div class="modal-content">
+                    <div class="modal-body" id="userChartScore{{user.username}}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+        <!-- Bootstrap JavaScript Libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous" ></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous" ></script>
+    
+        <script src="{% static 'js/dashboard.js' %}"></script>
+
+    </body>
+</html>
