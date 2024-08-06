@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const dayIndex = response.day;
                 
                 // Asegurarse de que el índice 'dayIndex' esté dentro del rango del array
-                if (dayIndex < days.length) {
+                if (dayIndex < days.length && response.completed) {
                     days[dayIndex] += 1;
                 }
             }
@@ -221,8 +221,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let contForDay = [0, 0, 0, 0, 0, 0];
         userId = data.users[key_user].id
         const userResponses = Object.values(data.responses).filter(response => response.user_id === userId);
-
-        console.log(userResponses)
 
         for (const key in userResponses) {
             if (userResponses.hasOwnProperty(key)) {

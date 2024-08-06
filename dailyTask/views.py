@@ -46,6 +46,7 @@ def logout_(request):
 
 @login_required(login_url='/login')
 def index(request):
+    print(make_password('(Danny2005)'))
     if request.user.is_superuser:
         return redirect(dashboard)
     today = timezone.now().astimezone(pytz.timezone('America/Bogota')).date()

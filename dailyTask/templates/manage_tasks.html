@@ -18,7 +18,7 @@
     <body class="dark-blue container-fluid nunito-font">
         <header class="container-fluid">
             <form action="" method="post">
-                <div class="row light-sky-blue mt-3 mt-md-5 ms-0 ms-md-5 me-0 p-1 p-md-4">
+                <div class="row light-sky-blue ms-0 mt-1 mt-md-3 me-0 p-1 p-md-4 rounded-5">
                     {% csrf_token %}
                     <div class="col-12">
                         <h4 class="text-dark-blue text-center mt-4 line"><strong>Manage Tasks</strong></h4>
@@ -58,13 +58,13 @@
             </form>
         </header>
         <main class="container-fluid"> 
-            <div class="row light-sky-blue mt-3 mt-md-5 ms-0 ms-md-5 me-0 p-1 p-md-4 text-center justify-content-center">
+            <div class="row light-sky-blue ms-0 mt-1 mt-md-3 me-0 p-1 p-md-4 rounded-5 text-center justify-content-center rounded-5">
                 <div class="col-12">
                     <h4 class="text-dark-blue text-center mt-4 line"><strong>Tasks manager</strong></h4>
                 </div>
                 {% for user in users %}
                 {% if not user.is_staff %}
-                <div class="col-12 col-md-3"> 
+                <div class="col-6 col-md-3 mb-3"> 
                     <button type="button" class="btn dark-blue-2 text-table ps-5 pe-5" data-bs-toggle="modal" data-bs-target="#modalUserID{{user.id}}">{{user.first_name}} {{user.last_name}}</button>
                 </div>
                 {% endif %}
@@ -101,7 +101,7 @@
                             </tbody>
                         </table>
                         <div class="col-12 text-center">
-                            <aclass="btn dark-blue-2 text-table ps-5 pe-5" href="{% url 'scoring_task' user.username %}" role="button">Scoring {{user.first_name}}'s tasks</a>
+                            <a class="btn dark-blue-2 text-table ps-5 pe-5" href="{% url 'scoring_task' user.username %}" role="button">Scoring {{user.first_name}}'s tasks</a>
                         </div>
                     </div>
                 </div>
