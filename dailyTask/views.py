@@ -46,6 +46,8 @@ def logout_(request):
 
 @login_required(login_url='/login')
 def index(request):
+    if request.user.is_superuser:
+        return redirect(dashboard)
     today = timezone.now().astimezone(pytz.timezone('America/Bogota')).date()
     latest_responses = {}
     delayed_responses = {}
@@ -175,13 +177,19 @@ def response_pending_tasks(request):
         
     return redirect(index)
 
+@login_required(login_url='/login')
 def dashboard(request):
+    if not request.user.is_superuser:
+        return redirect(index)
     context = {
         'users':Users.objects.filter(is_superuser=0)
     }
     return render(request, 'dashboard.html', context)
 
+@login_required(login_url='/login')
 def manage_tasks(request):
+    if not request.user.is_superuser:
+        return redirect(index)
     if request.method == 'POST':
         task = Tasks()
         task.title = request.POST['task']
@@ -202,7 +210,10 @@ def manage_tasks(request):
     }
     return render(request, 'manage_tasks.html', context)
 
+@login_required(login_url='/login')
 def scoring_task(request, username):
+    if not request.user.is_superuser:
+        return redirect(index)
     if request.method == 'POST':
         return score_response(request, username)
     user = Users.objects.get(username=username)
