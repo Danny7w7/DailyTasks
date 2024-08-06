@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (dayIndex < days.length) {
                     contForDay[dayIndex] += 1;
                     average = (days[dayIndex] + response.score) / contForDay[dayIndex];
-                    days[dayIndex] = average;
+                    days[dayIndex] = parseFloat(average.toFixed(1));
                 }
             }
         }
