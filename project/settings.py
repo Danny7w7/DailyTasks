@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-dlc*$=ei*-#6&!&*e*u_g43)+tyb!7p1qxm0=ece(j#^e!7rip'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 CSRF_TRUSTED_ORIGINS = ['http://tasks.lapeira.com']
 ALLOWED_HOSTS = ['www.tasks.lapeira.com', 'tasks.lapeira.com']
