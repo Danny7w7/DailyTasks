@@ -46,7 +46,7 @@ def logout_(request):
 
 @login_required(login_url='/login')
 def index(request):
-    print(make_password('(Danny2005)'))
+    print(make_password('360E6rrmvktf'))
     if request.user.is_superuser:
         return redirect(dashboard)
     today = timezone.now().astimezone(pytz.timezone('America/Bogota')).date()
@@ -94,7 +94,7 @@ def index(request):
             response.save()
             note = Score.objects.filter(response_scoring=response).first() or Score()
             note.score = 10 if response.completed else 1
-            note.scored_by = request.user
+            note.scored_by = 1
             note.response_scoring = response
             note.scored_date = datetime.today()
             note.save()

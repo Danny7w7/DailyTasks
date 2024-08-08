@@ -43,5 +43,5 @@ class MarkDelayedTasksCronJob(CronJobBase):
                         score.score = 1
                         score.scored_date = today
                         score.response_scoring = response
-                        score.scored_by = Users.objects.get(id=2)
+                        score.scored_by = Users.objects.get(id=1)
                         score.save()
