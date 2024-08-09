@@ -94,7 +94,7 @@ def index(request):
             response.save()
             note = Score.objects.filter(response_scoring=response).first() or Score()
             note.score = 10 if response.completed else 1
-            note.scored_by = 1
+            note.scored_by = Users.objects.get(id=1)
             note.response_scoring = response
             note.scored_date = datetime.today()
             note.save()
