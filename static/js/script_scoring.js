@@ -101,3 +101,5 @@ today = yyyy + '-' + mm + '-' + dd;
 // Establecer el valor del input
 document.getElementById('inputDateDailyHidden').value = today;
 document.getElementById('inputDateWeeklyHidden').value = today;
+document.getElementById('inputDateDaily').value = today;
+document.getElementById('inputDateWeekly').value = today;

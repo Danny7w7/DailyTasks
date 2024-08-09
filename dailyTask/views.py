@@ -57,7 +57,6 @@ def index(request):
         data = request.POST
         for key, value in data.items():
             # Verifica si el valor está vacío
-            print(re.match(r'^checkTask\d+$', key))
             if re.match(r'^checkTask\d+$', key) or key == 'csrfmiddlewaretoken':
                 continue
 
@@ -249,7 +248,7 @@ def scoring_task(request, username):
                     'completed': answer.completed,
                     'score': score
                 }
-            elif task.period == 'yy':
+            elif task.period == 'weekly':
                 try:
                     score = Score.objects.get(response_scoring=answer).score
                 except Score.DoesNotExist:
@@ -281,13 +280,13 @@ def scoring_task(request, username):
         last_active_task_daily = None
 
     # Tareas semanales
-    yy_tasks = tasks.filter(period='yy')
-    if yy_tasks:
-        first_active_task_yy = yy_tasks.first().id
-        last_active_task_yy = yy_tasks.last().id
+    weekly_tasks = tasks.filter(period='weekly')
+    if weekly_tasks:
+        first_active_task_weekly = weekly_tasks.first().id
+        last_active_task_weekly = weekly_tasks.last().id
     else:
-        first_active_task_yy = None
-        last_active_task_yy = None
+        first_active_task_weekly = None
+        last_active_task_weekly = None
 
     context = {
         'user_rated': user,
@@ -295,15 +294,16 @@ def scoring_task(request, username):
         'latest_responses': latest_responses,
         'first_active_task_daily': first_active_task_daily,
         'last_active_task_daily': last_active_task_daily,
-        'first_active_task_yy': first_active_task_yy,
-        'last_active_task_yy': last_active_task_yy
+        'first_active_task_weekly': first_active_task_weekly,
+        'last_active_task_weekly': last_active_task_weekly
     }
+    print(context)
     return render(request, 'scoringTask.html', context)
 
 # Fetch JS
 @csrf_exempt
 def change_state_task(request):
-    task = Tasks.objects.get(id=request.POST['id'])
+    task = Tasks.objects.get(id=extract_numbers(request.POST['id']))
     task.is_active = request.POST['checked']
     task.save()
     return JsonResponse({"message": "ok"})
@@ -361,22 +361,22 @@ def filter_task(request):
 def score_response(request, username):
     if request.POST.get('dateDaily'):
         datecomp = datetime.strptime(request.POST['dateDaily'], '%Y-%m-%d').date()
-    elif request.POST.get('dateyy'):
-        datecomp = datetime.strptime(request.POST['dateyy'], '%Y-%m-%d').date()
+    elif request.POST.get('dateWeekly'):
+        datecomp = datetime.strptime(request.POST['dateWeekly'], '%Y-%m-%d').date()
         start_date, end_date = get_current_week_range(datecomp)
         start_datetime = timezone.make_aware(datetime.combine(start_date, time.min))
         end_datetime = timezone.make_aware(datetime.combine(end_date, time.max))
 
     for key, value in request.POST.items():
-        if not value.strip() or re.match(r'^checkTask\d+$', key) or key == 'csrfmiddlewaretoken' or key == 'dateDaily' or key == 'dateyy':
+        if not value.strip() or re.match(r'^checkTask\d+$', key) or key == 'csrfmiddlewaretoken' or key == 'dateDaily' or key == 'dateWeekly':
             continue
         task = Tasks.objects.get(id=extract_numbers(key))
         if request.POST.get('dateDaily'):
             response = Response.objects.filter(task_id=extract_numbers(key), created_at=datecomp).last()
-        elif request.POST.get('dateyy'):
+        elif request.POST.get('dateWeekly'):
             response = Response.objects.filter(task_id=extract_numbers(key), created_at__range=(start_datetime, end_datetime)).last()
 
-        if not (response):
+        if not response:
             # Si no existe o no es de hoy, crear una nueva respuesta
             response = Response.objects.create(
                 task=task,
