@@ -26,8 +26,8 @@
                     
                     <div class="col-6 mt-2 mb-3">
                         <label class="form-label text-dark-blue">Employee</label>
-                        <select class="form-control form-select-sm" name="employee">
-                            <option selected>Select one</option>
+                        <select class="form-control form-select-sm" name="employee" required>
+                            <option value="" selected>Select one</option>
                             {% for user in users %}
                             {% if not user.is_staff %}
                             <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
@@ -37,8 +37,8 @@
                     </div>
                     <div class="col-6 mt-2 mb-3">
                         <label class="form-label text-dark-blue">Period</label>
-                        <select class="form-control form-select-sm" name="period">
-                            <option selected>Select one</option>
+                        <select class="form-control form-select-sm" name="period" required>
+                            <option value="" selected>Select one</option>
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
                         </select>
@@ -46,7 +46,7 @@
                     <div class="col-12 mt-2 mb-3">
                         <label class="form-label text-dark-blue">Task</label>
                         <label for="" class="form-label"></label>
-                        <textarea class="form-control" name="task" rows="3"></textarea>
+                        <textarea class="form-control" name="task" rows="3" required></textarea>
                     </div>
                     <div class="col-12">
                         <p class="line mt-3"></p>
