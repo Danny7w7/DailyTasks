@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 curve: 'smooth'
             },
             title: {
-                text: 'Daily Compliance Rate',
+                text: '‎ ', // This is an empty character
                 align: 'left'
             },
             grid: {
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 curve: 'smooth'
             },
             title: {
-                text: 'Daily Compliance Rate',
+                text: '‎ ', // This is an empty character
                 align: 'left'
             },
             grid: {
@@ -219,9 +219,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function CreateOptionScore(data, key_user) {
         let days = [0, 0, 0, 0, 0, 0];
         let contForDay = [0, 0, 0, 0, 0, 0];
+        let sumDays = [0, 0, 0, 0, 0, 0]
         userId = data.users[key_user].id
         const userResponses = Object.values(data.responses).filter(response => response.user_id === userId);
-
         for (const key in userResponses) {
             if (userResponses.hasOwnProperty(key)) {
                 const response = userResponses[key];
@@ -230,22 +230,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Asegurarse de que el índice 'dayIndex' esté dentro del rango del array
                 if (dayIndex < days.length) {
                     contForDay[dayIndex] += 1;
-                    average = (days[dayIndex] + response.score) / contForDay[dayIndex];
-                    days[dayIndex] = parseFloat(average.toFixed(1));
+                    sumDays[dayIndex] = sumDays[dayIndex] + response.score
+                    average = sumDays[dayIndex] / contForDay[dayIndex];
+                    days[dayIndex] = average;
                 }
             }
         }
+        for (let i = 0; i < days.length; i++) {
+            if (days[i] % 1 !== 0) {
+                // Si el número es decimal
+                days[i] = parseFloat(days[i].toFixed(1));
+            } 
+            // Si es entero, lo dejamos como está
+        }
 
         var options = {
-            series: [
-                {
-                    name: "Score daily",
-                    data: days
-                }
-            ],
+            series: [{
+                data: days
+            }],
             chart: {
                 height: 350,
                 type: 'line',
+                id: 'areachart-2',
                 dropShadow: {
                     enabled: true,
                     color: '#000',
@@ -261,70 +267,72 @@ document.addEventListener('DOMContentLoaded', function () {
                     show: false
                 }
             },
-            colors: ['#545454', '#77B6EA'],
+            colors: ['#545454'],
             dataLabels: {
                 enabled: true,
+            },
+            annotations: {
+                yaxis: [{
+                    y: 8,
+                    y2: 0,
+                    borderColor: '#000',
+                    fillColor: '#ff0000',
+                    opacity: 0.2,
+                    label: {
+                        borderColor: '#333',
+                        style: {
+                            fontSize: '10px',
+                            color: '#333',
+                            background: '#ff0000',
+                        },
+                    }
+                },
+                {
+                    y: 10,
+                    y2: 8,
+                    borderColor: '#000',
+                    fillColor: '#00ff00',
+                    opacity: 0.2,
+                    label: {
+                        borderColor: '#333',
+                        style: {
+                            fontSize: '10px',
+                            color: '#333',
+                            background: '#00ff00',
+                        },
+                    }
+                }],
+            },
+            dataLabels: {
+                enabled: false
             },
             stroke: {
                 curve: 'smooth'
             },
+            grid: {
+                padding: {
+                    right: 30,
+                    left: 20
+                }
+            },
             title: {
-                text: 'Score Compliance Rate',
+                text: 'Line with Annotations',
                 align: 'left'
             },
-            grid: {
-                borderColor: '#e7e7e7',
-                row: {
-                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                    opacity: 0
-                },
-            },
-            markers: {
-                size: 1
-            },
-            fill: {
-                type: "gradient",
-                gradient: {
-                  type: 'vertical',
-                  shadeIntensity: 1,
-                  opacityFrom: 1,
-                  opacityTo: 1,
-                  colorStops: [
-                    {
-                      offset: 20,
-                      color: "#00ff00",
-                      opacity: 1
-                    },
-                    {
-                      offset: 30,
-                      color: "#ff0000",
-                      opacity: 1
-                    }
-                  ]
-                }
-              },
+            labels: ['Lun', 'Mar', 'Mier', 'Juev', 'Vier', 'Saba'],
             xaxis: {
-                categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                title: {
-                    text: 'Days'
-                }
+                type: 'text',
             },
             yaxis: {
                 title: {
                     text: 'Score'
                 },
-                min: 1,
+                min: 0,
                 max: 10
             },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'right',
-                floating: true,
-                offsetY: -25,
-                offsetX: -5
-            }
         };
         return options; 
     }
 
 });
+

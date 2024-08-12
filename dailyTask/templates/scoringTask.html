@@ -37,7 +37,7 @@
                     <input hidden type="date" id="inputDateDailyHidden" class="form-control form-control-sm" name="dateDaily"/>
                     {% csrf_token %}
                     <div class="col-12 table-responsive">
-                        <table class="table-list">
+                        <table class="table-list table2">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -56,7 +56,7 @@
                                             {% if latest_responses|get_item:task.id|get_item:'completed' %}checked{% endif %}>
                                         </td>
                                         <td>
-                                            <input id="noteTask{{ task.id }}" disabled name="noteTask{{ task.id }}" class="custom-input" type="text" value="{{ latest_responses|get_item:task.id|get_item:'response_text'|default:'' }}">
+                                            {{ latest_responses|get_item:task.id|get_item:'response_text'|default:'' }}
                                         </td>
                                         <td>
                                             <input id="score{{ task.id }}" name="score{{ task.id }}" class="custom-input" type="number" value="{{ latest_responses|get_item:task.id|get_item:'score'|default:'' }}">

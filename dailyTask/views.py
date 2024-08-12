@@ -86,17 +86,20 @@ def index(request):
             else:
                 response = Response()
 
-            response.task = taskComp
-            response.user = request.user
-            response.completed = True if f'checkTask{extract_numbers(key)}' in request.POST else False
-            response.response_text = request.POST[f'noteTask{extract_numbers(key)}']
-            response.save()
-            note = Score.objects.filter(response_scoring=response).first() or Score()
-            note.score = 10 if response.completed else 1
-            note.scored_by = Users.objects.get(id=1)
-            note.response_scoring = response
-            note.scored_date = datetime.today()
-            note.save()
+            # Check if the value arrived empty so that neither Score nor response is created
+            if not value == '':
+                response.task = taskComp
+                response.user = request.user
+                response.completed = True if f'checkTask{extract_numbers(key)}' in request.POST else False
+                response.response_text = request.POST[f'noteTask{extract_numbers(key)}']
+                response.save()
+
+                note = Score.objects.filter(response_scoring=response).first() or Score()
+                note.score = 10 if response.completed else 1
+                note.scored_by = Users.objects.get(id=1)
+                note.response_scoring = response
+                note.scored_date = datetime.today()
+                note.save()
 
     tasks = Tasks.objects.filter(assigned_to_id=request.user, is_active=True)
     for task in tasks:
@@ -169,7 +172,6 @@ def index(request):
 def response_pending_tasks(request):
     ids = request.POST.getlist('id')
     for id in ids:
-        print(request.POST.get(f'noteResponse{id}'))
         response = Response.objects.get(id=id)
         response.response_text = request.POST.get(f'noteResponse{id}') or ''
         response.completed = True if request.POST.get(f'checkResponse{id}') else False
@@ -297,7 +299,6 @@ def scoring_task(request, username):
         'first_active_task_weekly': first_active_task_weekly,
         'last_active_task_weekly': last_active_task_weekly
     }
-    print(context)
     return render(request, 'scoringTask.html', context)
 
 # Fetch JS
