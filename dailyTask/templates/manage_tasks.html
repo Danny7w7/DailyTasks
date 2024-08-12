@@ -17,7 +17,7 @@
 
     <body class="dark-blue container-fluid nunito-font">
         <header class="container-fluid">
-            <form action="" method="post">
+            <form id="taskForm" action="" method="post">
                 <div class="row light-sky-blue ms-0 mt-1 mt-md-3 me-0 p-1 p-md-4 rounded-5">
                     {% csrf_token %}
                     <div class="col-12">
@@ -46,7 +46,8 @@
                     <div class="col-12 mt-2 mb-3">
                         <label class="form-label text-dark-blue">Task</label>
                         <label for="" class="form-label"></label>
-                        <textarea class="form-control" name="task" rows="3" required></textarea>
+                        <textarea id="titleText" class="form-control" name="task" rows="3" required></textarea>
+                        <p id="charCount">Max: 0/60</p>
                     </div>
                     <div class="col-12">
                         <p class="line mt-3"></p>
@@ -114,7 +115,9 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous" ></script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous" ></script>
-    
+        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         <script src="{% static 'js/script.js' %}"></script>
     </body>
 </html>

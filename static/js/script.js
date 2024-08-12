@@ -2,11 +2,9 @@
 const numberOfTasks = document.querySelectorAll('input[type="checkbox"]');
 
 numberOfTasks.forEach(taskElement => {
-    console.log(taskElement)
 
     // Check if the element exists (it might not if the IDs are not continuous)
     if (taskElement) {
-        console.log('Aqui esta entrando')
         // Add event listener to the element
         taskElement.addEventListener('change', function() {
             var formData = new FormData();
@@ -25,4 +23,51 @@ numberOfTasks.forEach(taskElement => {
             });
         });
     }
+});
+
+const textarea = document.getElementById('titleText');
+const charCountDisplay = document.getElementById('charCount');
+
+textarea.addEventListener('input', function() {
+    const charCount = textarea.value.length;
+    charCountDisplay.textContent = `Max: ${charCount}/60`;
+    if (charCount > 60){
+        charCountDisplay.style.color = 'red'
+    }else{
+        charCountDisplay.style.color = 'black'
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const taskForm = document.getElementById('taskForm');
+
+    function validateForm() {
+        if (textarea.value.length > 60) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    taskForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        if (validateForm()) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Your text has been successfully added.',
+                icon: 'success',
+                confirmButtonText: 'Accept'
+              }).then(() => {
+                event.target.submit();
+            });
+        } else {
+            Swal.fire({
+                title: 'Oops...',
+                text: 'You have exceeded the character limit!',
+                icon: "error",
+                confirmButtonText: 'Accept'
+            })
+        }
+    });
 });

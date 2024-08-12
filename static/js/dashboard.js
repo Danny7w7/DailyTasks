@@ -251,26 +251,11 @@ document.addEventListener('DOMContentLoaded', function () {
             chart: {
                 height: 350,
                 type: 'line',
-                id: 'areachart-2',
-                dropShadow: {
-                    enabled: true,
-                    color: '#000',
-                    top: 18,
-                    left: 7,
-                    blur: 10,
-                    opacity: 0.2
-                },
                 zoom: {
                     enabled: false
                 },
-                toolbar: {
-                    show: false
-                }
             },
             colors: ['#545454'],
-            dataLabels: {
-                enabled: true,
-            },
             annotations: {
                 yaxis: [{
                     y: 8,
@@ -278,14 +263,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     borderColor: '#000',
                     fillColor: '#ff0000',
                     opacity: 0.2,
-                    label: {
-                        borderColor: '#333',
-                        style: {
-                            fontSize: '10px',
-                            color: '#333',
-                            background: '#ff0000',
-                        },
-                    }
                 },
                 {
                     y: 10,
@@ -293,35 +270,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     borderColor: '#000',
                     fillColor: '#00ff00',
                     opacity: 0.2,
-                    label: {
-                        borderColor: '#333',
-                        style: {
-                            fontSize: '10px',
-                            color: '#333',
-                            background: '#00ff00',
-                        },
-                    }
                 }],
-            },
-            dataLabels: {
-                enabled: false
             },
             stroke: {
                 curve: 'smooth'
             },
-            grid: {
-                padding: {
-                    right: 30,
-                    left: 20
-                }
-            },
             title: {
-                text: 'Line with Annotations',
+                text: 'Score',
                 align: 'left'
             },
-            labels: ['Lun', 'Mar', 'Mier', 'Juev', 'Vier', 'Saba'],
             xaxis: {
                 type: 'text',
+                categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             },
             yaxis: {
                 title: {
