@@ -196,6 +196,8 @@ def manage_tasks(request):
         task.created_by = request.user
         task.period = request.POST['period']
         task.is_active = True
+        task.activation_date = datetime.today()
+        task.deactivation_date = datetime(2999, 1, 1)
         task.assigned_to = Users.objects.get(id=request.POST['employee'])
         task.save()
 
@@ -314,6 +316,13 @@ def scoring_task(request, username, period):
 def change_state_task(request):
     task = Tasks.objects.get(id=extract_numbers(request.POST['id']))
     task.is_active = request.POST['checked']
+    
+    if request.POST['checked'] == 'True':
+        task.activation_date = datetime.today()
+        task.deactivation_date = datetime(2999, 1, 1)
+    else:
+        task.deactivation_date = datetime.today()
+
     task.save()
     return JsonResponse({"message": "ok"})
 
@@ -414,8 +423,8 @@ def make_main_chart(request):
     users_list = list(users.values('id', 'username'))
 
     responses = {}
-    daily_tasks = Tasks.objects.filter(period='daily', is_active=True)
-    tasks_list = list(daily_tasks.values('id', 'assigned_to_id', 'created'))
+    daily_tasks = Tasks.objects.filter(period='daily')
+    tasks_list = list(daily_tasks.values('id', 'assigned_to_id', 'created', 'activation_date', 'deactivation_date'))
     responses_for_daily_tasks = Response.objects.filter(task__in=daily_tasks)
 
     scores = {score.response_scoring_id: score.score for score in Score.objects.filter(response_scoring__in=responses_for_daily_tasks)}
@@ -423,6 +432,7 @@ def make_main_chart(request):
     for response in responses_for_daily_tasks:
         responses[response.id] = {
             'day':response.created_at.weekday(),
+            'tasks':tasks_list,
             'completed':response.completed,
             'user_id':response.user_id,
             'score': scores.get(response.id, None)

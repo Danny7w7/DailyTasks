@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
         createMainChart(data)
         createUsersChart(data)
         createScoreChart(data)
-        // console.log(data)
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -18,22 +17,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createMainChart(data) {
         let days = [0, 0, 0, 0, 0, 0];
-        for (let i = 0; i < days.length; i++) {
-            data.tasks.forEach(task => {
-                const today = new Date();
-                const currentDay = today.getDay();
-                const differenceDays = ((i+1) - currentDay + 7) % 7;
-                today.setDate(today.getDate() + differenceDays);
+        let assignedTasks = [0, 0, 0, 0, 0, 0];;
+        const week = getCurrentWeek();
 
-                dateTask = new Date(data.tasks.created)
-                    if (dateTask.getTime() <= today.getTime()){
-                        uwu = uwu + 1
-                        console.log(`Se crearon ${uwu} el dia ${today}`)
-                    }
+        for (let i = 0; i < 6; i++) {
+            const currentDay = new Date(week.startOfWeek);
+            currentDay.setDate(week.startOfWeek.getDate() + i);
+        
+            const currentDateString = toDateString(currentDay);
+        
+            data.tasks.forEach(task => {
+                if (currentDateString >= task.activation_date && currentDateString <= task.deactivation_date) {
+                    assignedTasks[i] += 1
+                }
             });
         }
 
-        var assignedTasks = Array(6).fill(data.tasks_count);
         // Iterar sobre las propiedades del objeto 'responses'
         for (const key in data.responses) {
             if (data.responses.hasOwnProperty(key)) {
@@ -144,8 +143,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const userTasks = data.tasks.filter(task => task.assigned_to_id === userId);
         const userResponses = Object.values(data.responses).filter(response => response.user_id === userId);
         
-        var assignedTasks = Array(6).fill(userTasks.length);
         let days = [0, 0, 0, 0, 0, 0];
+        let assignedTasks = [0, 0, 0, 0, 0, 0];;
+        const week = getCurrentWeek();
+
+        for (let i = 0; i < 6; i++) {
+            const currentDay = new Date(week.startOfWeek);
+            currentDay.setDate(week.startOfWeek.getDate() + i);
+        
+            const currentDateString = toDateString(currentDay);
+        
+            userTasks.forEach(task => {
+                if (currentDateString >= task.activation_date && currentDateString <= task.deactivation_date) {
+                    assignedTasks[i] += 1
+                }
+            });
+        }
         for (const key in userResponses) {
             if (userResponses.hasOwnProperty(key)) {
                 const response = userResponses[key];
@@ -311,3 +324,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+function toDateString(date) {
+    return date.toISOString().split('T')[0]; // Convertir a YYYY-MM-DD
+}
+
+function getCurrentWeek() {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 es domingo, 1 es lunes, etc.
+
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Lunes de esta semana
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Domingo de esta semana
+
+    return {
+        startOfWeek: startOfWeek,
+        endOfWeek: endOfWeek
+    };
+}

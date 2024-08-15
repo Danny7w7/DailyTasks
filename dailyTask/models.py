@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 PERIOD_CHOICES = [
     ('daily', 'Daily'),
@@ -16,7 +17,7 @@ class Users(AbstractUser):
     
 class Tasks(models.Model):
     title = models.CharField(max_length=60)
-    created = models.DateField(auto_now=True)
+    created = models.DateField(auto_now_add=True)
     created_by = models.ForeignKey(Users, related_name='created_tasks', on_delete=models.CASCADE)
     assigned_to = models.ForeignKey(Users, related_name='assigned_tasks', on_delete=models.CASCADE)
     period = models.CharField(
@@ -25,6 +26,8 @@ class Tasks(models.Model):
         default='daily',
     )
     is_active = models.BooleanField()
+    activation_date = models.DateField(default=timezone.now)
+    deactivation_date = models.DateField()
 
     def __str__(self):
         return f'{self.id} - {self.title} - Assigned to {self.assigned_to.username}'
