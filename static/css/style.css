@@ -50,16 +50,19 @@ th, td {
 
 /* Estilos para la segunda tabla */
 .table2 th:first-child, .table2 td:first-child {
-    width: 45%;
+    width: 30%;
 }
 .table2 th:nth-child(2), .table2 td:nth-child(2) {
-    width: 3%;
+    width: 5%;
 }
 .table2 th:nth-child(3), .table2 td:nth-child(3) {
-    width: 35%;
+    width: 30%;
 }
 .table2 th:nth-child(4), .table2 td:nth-child(4) {
-    width: 15%;
+    width: 5%;
+}
+.table2 th:nth-child(5), .table2 td:nth-child(5) {
+    width: 30%;
 }
 /* Quitar el borde de toda la primera columna */
 th:first-child, td:first-child {

@@ -56,7 +56,6 @@ def index(request):
     if request.method == 'POST':
         data = request.POST
         for key, value in data.items():
-            # Verifica si el valor está vacío
             if re.match(r'^checkTask\d+$', key) or key == 'csrfmiddlewaretoken':
                 continue
 
@@ -87,19 +86,18 @@ def index(request):
                 response = Response()
 
             # Check if the value arrived empty so that neither Score nor response is created
-            if not value == '':
-                response.task = taskComp
-                response.user = request.user
-                response.completed = True if f'checkTask{extract_numbers(key)}' in request.POST else False
-                response.response_text = request.POST[f'noteTask{extract_numbers(key)}']
-                response.save()
+            response.task = taskComp
+            response.user = request.user
+            response.completed = True if f'checkTask{extract_numbers(key)}' in request.POST else False
+            response.response_text = request.POST[f'noteTask{extract_numbers(key)}']
+            response.save()
 
-                note = Score.objects.filter(response_scoring=response).first() or Score()
-                note.score = 10 if response.completed else 1
-                note.scored_by = Users.objects.get(id=1)
-                note.response_scoring = response
-                note.scored_date = datetime.today()
-                note.save()
+            note = Score.objects.filter(response_scoring=response).first() or Score()
+            note.score = 10 if response.completed else 1
+            note.scored_by = Users.objects.get(id=1)
+            note.response_scoring = response
+            note.scored_date = datetime.today()
+            note.save()
 
     tasks = Tasks.objects.filter(assigned_to_id=request.user, is_active=True)
     for task in tasks:
@@ -213,11 +211,11 @@ def manage_tasks(request):
     return render(request, 'manage_tasks.html', context)
 
 @login_required(login_url='/login')
-def scoring_task(request, username):
+def scoring_task(request, username, period):
     if not request.user.is_superuser:
         return redirect(index)
     if request.method == 'POST':
-        return score_response(request, username)
+        return score_response(request, username, period)
     user = Users.objects.get(username=username)
     latest_responses = {}
     today = timezone.now().astimezone(pytz.timezone('America/Bogota')).date()  # Solo la fecha actual
@@ -225,6 +223,7 @@ def scoring_task(request, username):
     tasks = Tasks.objects.filter(assigned_to_id=user, is_active=True)
     for task in tasks:
         score = None
+        admin_note = None
         # Filtra las respuestas de hoy para la tarea actual
         answer = Response.objects.filter(
             task=task,
@@ -241,36 +240,44 @@ def scoring_task(request, username):
             # Añade el texto de la última respuesta de hoy al diccionario, o una cadena vacía si no existe
             if created_at_bogota == today and task.period == 'daily':
                 try:
-                    score = Score.objects.get(response_scoring=answer, scored_date=today).score
+                    score_obj = Score.objects.get(response_scoring=answer, scored_date=today)
+                    score = score_obj.score
+                    admin_note = score_obj.admin_note
                 except Score.DoesNotExist:
                     pass
 
                 latest_responses[task.id] = {
                     'response_text': answer.response_text,
                     'completed': answer.completed,
-                    'score': score
+                    'score': score,
+                    'admin_note':admin_note
                 }
             elif task.period == 'weekly':
                 try:
-                    score = Score.objects.get(response_scoring=answer).score
+                    score_obj = Score.objects.get(response_scoring=answer, scored_date=today)
+                    score = score_obj.score
+                    admin_note = score_obj.admin_note
                 except Score.DoesNotExist:
                     pass
                 latest_responses[task.id] = {
                     'response_text': answer.response_text,
                     'completed': answer.completed,
-                    'score': score
+                    'score': score,
+                    'admin_note': admin_note
                 }
             else:
                 latest_responses[task.id] = {
                     'response_text': '',
                     'completed': False,
-                    'score': score
+                    'score': score,
+                    'admin_note': admin_note
                 }
         else:
             latest_responses[task.id] = {
                 'response_text': '',
                 'completed': False,
-                'score': score
+                'score': score,
+                'admin_note': admin_note
             }
             
     daily_tasks = tasks.filter(period='daily')
@@ -297,7 +304,8 @@ def scoring_task(request, username):
         'first_active_task_daily': first_active_task_daily,
         'last_active_task_daily': last_active_task_daily,
         'first_active_task_weekly': first_active_task_weekly,
-        'last_active_task_weekly': last_active_task_weekly
+        'last_active_task_weekly': last_active_task_weekly,
+        'period': period
     }
     return render(request, 'scoringTask.html', context)
 
@@ -312,6 +320,7 @@ def change_state_task(request):
 @csrf_exempt
 def filter_task(request):
     period = request.POST['period']
+    user = Users.objects.get(username=request.POST['username'])
 
     if period == 'daily':
         formatted_date = datetime.strptime(request.POST['date'], '%Y-%m-%d').date()
@@ -325,7 +334,8 @@ def filter_task(request):
 
     filtered_responses = Response.objects.filter(
         created_at__range=(start_datetime, end_datetime),
-        task__period=period  # Filtra las respuestas asociadas a tareas con periodo 'daily'
+        task__period=period,  # Filtra las respuestas asociadas a tareas con periodo 'daily'
+        user=user
     )
     
     tasks_with_responses = {}
@@ -333,8 +343,10 @@ def filter_task(request):
         # Obtén el score asociado a la respuesta, si existe
         try:
             score_value = response.score.score
+            adminNote = response.score.admin_note
         except Score.DoesNotExist:
             score_value = None
+            adminNote = None
 
         if response.task.id not in tasks_with_responses:
             tasks_with_responses[response.task.id] = {
@@ -348,7 +360,8 @@ def filter_task(request):
             "response_text": response.response_text,
             "user": response.user.username,
             "created_at": response.created_at,
-            "score": score_value,  # Agrega los datos del score aquí
+            "score": score_value,
+            "admin_Note":adminNote
         })
 
     response_data = {
@@ -359,7 +372,7 @@ def filter_task(request):
 
     return JsonResponse(response_data)
 
-def score_response(request, username):
+def score_response(request, username, period):
     if request.POST.get('dateDaily'):
         datecomp = datetime.strptime(request.POST['dateDaily'], '%Y-%m-%d').date()
     elif request.POST.get('dateWeekly'):
@@ -369,7 +382,8 @@ def score_response(request, username):
         end_datetime = timezone.make_aware(datetime.combine(end_date, time.max))
 
     for key, value in request.POST.items():
-        if not value.strip() or re.match(r'^checkTask\d+$', key) or key == 'csrfmiddlewaretoken' or key == 'dateDaily' or key == 'dateWeekly':
+        print(key, ' ', value)
+        if re.match(r'^checkTask\d+$', key) or key == 'csrfmiddlewaretoken' or key == 'dateDaily' or key == 'dateWeekly':
             continue
         task = Tasks.objects.get(id=extract_numbers(key))
         if request.POST.get('dateDaily'):
@@ -385,13 +399,14 @@ def score_response(request, username):
                 completed=False,
             )
         note = Score.objects.filter(response_scoring=response).first() or Score()
-        note.score = request.POST[key]
+        note.score = request.POST[f'score{extract_numbers(key)}']
+        note.admin_note = request.POST[f'noteAdmin{extract_numbers(key)}']
         note.scored_by = request.user
         note.response_scoring = response
         note.scored_date = datecomp
         note.save()
 
-    return redirect(scoring_task, username)
+    return redirect(scoring_task, period, username)
 
 @csrf_exempt
 def make_main_chart(request):
@@ -399,8 +414,8 @@ def make_main_chart(request):
     users_list = list(users.values('id', 'username'))
 
     responses = {}
-    daily_tasks = Tasks.objects.filter(period='daily')
-    tasks_list = list(daily_tasks.values('id', 'assigned_to_id'))
+    daily_tasks = Tasks.objects.filter(period='daily', is_active=True)
+    tasks_list = list(daily_tasks.values('id', 'assigned_to_id', 'created'))
     responses_for_daily_tasks = Response.objects.filter(task__in=daily_tasks)
 
     scores = {score.response_scoring_id: score.score for score in Score.objects.filter(response_scoring__in=responses_for_daily_tasks)}

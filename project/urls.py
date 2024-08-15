@@ -26,7 +26,7 @@ urlpatterns = [
     # Admin Views
     path('dashboard/', views.dashboard, name='dashboard'),
     path('manage_tasks/', views.manage_tasks, name='manage_tasks'),
-    path('scoring_task/<str:username>/', views.scoring_task, name='scoring_task'),
+    path('scoring_task_<str:period>/<str:username>/', views.scoring_task, name='scoring_task'),
 
     # Fetch
     path('change_state_task/', views.change_state_task, name='change_state_task'),

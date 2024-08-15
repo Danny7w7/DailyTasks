@@ -18,6 +18,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createMainChart(data) {
         let days = [0, 0, 0, 0, 0, 0];
+        for (let i = 0; i < days.length; i++) {
+            data.tasks.forEach(task => {
+                const today = new Date();
+                const currentDay = today.getDay();
+                const differenceDays = ((i+1) - currentDay + 7) % 7;
+                today.setDate(today.getDate() + differenceDays);
+
+                dateTask = new Date(data.tasks.created)
+                    if (dateTask.getTime() <= today.getTime()){
+                        uwu = uwu + 1
+                        console.log(`Se crearon ${uwu} el dia ${today}`)
+                    }
+            });
+        }
+
         var assignedTasks = Array(6).fill(data.tasks_count);
         // Iterar sobre las propiedades del objeto 'responses'
         for (const key in data.responses) {

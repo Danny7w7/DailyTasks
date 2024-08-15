@@ -45,6 +45,7 @@ class Score(models.Model):
     scored_by = models.ForeignKey(Users, on_delete=models.CASCADE)
     response_scoring = models.OneToOneField(Response, on_delete=models.CASCADE)
     scored_date = models.DateField()
+    admin_note = models.TextField(null=True)
     
     def __str__(self):
         return f'{self.id} - {self.score} - "{self.response_scoring.response_text}" to {self.response_scoring.task.title}'

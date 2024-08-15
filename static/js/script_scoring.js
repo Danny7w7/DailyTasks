@@ -1,5 +1,9 @@
+const ruta = window.location.pathname.split('/');
+
+formTasks = document.getElementById('formTasks')
+
+var dateInputs = document.querySelectorAll('input[type="date"]');
 document.addEventListener('DOMContentLoaded', function() {
-    var dateInputs = document.querySelectorAll('input[type="date"]');
 
     dateInputs.forEach(dateInput => {
         dateInput.addEventListener('change', function() {
@@ -12,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var formData = new FormData();
                 formData.append('date', dateInput.value)
                 formData.append('period', dateInput.name)
+                formData.append('username', ruta[ruta.length - 2])
                 fetch('/filter_task/', {
                     method: 'POST',
                     body: formData
@@ -57,36 +62,69 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Acceder al array de responses dentro de response
                 const responses = task.response;
+                console.log(responses)
                 responses.forEach(response => {
-                    document.getElementById(`noteTask${taskId}`).value = response.response_text
+                    document.getElementById(`noteTask${taskId}`).textContent  = response.response_text
                     document.getElementById(`checkTask${taskId}`).checked = response.completed
                     document.getElementById(`score${taskId}`).value = response.score
+                    document.getElementById(`noteAdmin${taskId}`).value = response.admin_Note
                 });
             } else {
                 // Lógica cuando no hay tarea con taskId en data
-                    document.getElementById(`noteTask${taskId}`).value = ''
+                    document.getElementById(`noteTask${taskId}`).textContent  = ''
                     document.getElementById(`checkTask${taskId}`).checked = false
                     document.getElementById(`score${taskId}`).value = ''
+                    document.getElementById(`noteAdmin${taskId}`).value = ''
             }
         }
     }
     
    
-});
-function score_response(period) {
-    table = document.getElementById(`table_body_${period}`)
+    formTasks.addEventListener('submit', function(event) {
+        event.preventDefault();
     
-    // Obtiene todas las filas <tr> de la tabla
+        if (validateForm()) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'The score was saved correctly.',
+                icon: 'success',
+                confirmButtonText: 'Accept'
+              }).then(() => {
+                event.target.submit();
+            });
+        } else {
+            Swal.fire({
+                title: 'Oops...',
+                text: 'To create a score you have to rate the task!',
+                icon: "error",
+                confirmButtonText: 'Accept'
+            })
+        }
+    });
+});
+
+
+function validateForm() {
+    const table = document.getElementById(`table_body`)
     const rows = table.getElementsByTagName('tr');
     
-    for (let i = 0; i < rows.length; i++) {
-        
-        
+    for (let i = 1; i < rows.length; i++) {
+        const note = rows[i].cells[4]
+        input = note.querySelector("input")
+        if (input.value == ''){
+            continue;
+        }
+        inputScore = document.getElementById(`score${extractNumbers(input.id)}`)
+        if(inputScore.value == ''){
+            return false;
+        }
     }
+    return true;
 }
-console.log("When you start learning JS")
-console.log(1+"1")
-console.log(1-"1")
+
+function extractNumbers(string) {
+    return string.replace(/\D/g, '');
+  }
 
 // Obtener la fecha de hoy
 let today = new Date();
@@ -98,8 +136,6 @@ let yyyy = today.getFullYear();
 
 today = yyyy + '-' + mm + '-' + dd;
 
-// Establecer el valor del input
-document.getElementById('inputDateDailyHidden').value = today;
-document.getElementById('inputDateWeeklyHidden').value = today;
-document.getElementById('inputDateDaily').value = today;
-document.getElementById('inputDateWeekly').value = today;
+dateInputs.forEach(dateInput => {
+    dateInput.value = today
+});

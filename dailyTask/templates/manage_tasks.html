@@ -102,7 +102,8 @@
                             </tbody>
                         </table>
                         <div class="col-12 text-center">
-                            <a class="btn dark-blue-2 text-table ps-5 pe-5" href="{% url 'scoring_task' user.username %}" role="button">Scoring {{user.first_name}}'s tasks</a>
+                            <a class="btn dark-blue-2 text-table ps-5 pe-5" href="{% url 'scoring_task' 'daily' user.username %}" role="button">Scoring {{user.first_name}}'s daily tasks</a>
+                            <a class="btn dark-blue-2 text-table ps-5 pe-5" href="{% url 'scoring_task' 'weekly' user.username %}" role="button">Scoring {{user.first_name}}'s weekly tasks</a>
                         </div>
                     </div>
                 </div>
