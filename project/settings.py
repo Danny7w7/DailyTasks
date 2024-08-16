@@ -30,8 +30,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CSRF_TRUSTED_ORIGINS = ['http://tasks.lapeira.com', 'http://157.173.210.65'] #Change in production
-ALLOWED_HOSTS = ['www.tasks.lapeira.com', 'tasks.lapeira.com', '157.173.210.65']
+CSRF_TRUSTED_ORIGINS = ['http://tasks.lapeira.com'] #Change in production
+ALLOWED_HOSTS = ['www.tasks.lapeira.com', 'tasks.lapeira.com']
 
 
 # Application definition
