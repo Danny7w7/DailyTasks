@@ -12,7 +12,7 @@ from django_cron import CronJobBase, Schedule
 from .models import *
 
 class MarkDelayedTasksCronJob(CronJobBase):
-    RUN_AT_TIMES = ['12:05']
+    RUN_AT_TIMES = ['20:00']
 
     schedule = Schedule(run_at_times=RUN_AT_TIMES)
     code = 'dailyTask.MarkDelayedTasksCronJob'    # Código único
