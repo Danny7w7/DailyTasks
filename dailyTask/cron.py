@@ -18,7 +18,7 @@ class MarkDelayedTasksCronJob(CronJobBase):
     code = 'dailyTask.MarkDelayedTasksCronJob'    # Código único
 
     def do(self):
-        today = timezone.now().date()
+        today = datetime.datetime.now().date()
         if not today.weekday() == 6:
             tasks = Tasks.objects.all()
             for task in tasks:
