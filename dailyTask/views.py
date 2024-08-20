@@ -1,6 +1,6 @@
 # Importaciones de la biblioteca estándar
 import re
-from datetime import datetime, time, timedelta
+from datetime import datetime, time, timedelta, date
 
 # Importaciones de Django
 from django.contrib.auth import authenticate, login, logout
@@ -419,13 +419,20 @@ def score_response(request, username, period):
 
 @csrf_exempt
 def make_main_chart(request):
+    current_date = timezone.now().date()
+
     users = Users.objects.filter(is_superuser=0)
     users_list = list(users.values('id', 'username'))
 
     responses = {}
+
+    start_datetime = timezone.make_aware(datetime.combine(current_date, time.min))
+    end_datetime = timezone.make_aware(datetime.combine(current_date, time.max))
+    print(f'De {start_datetime} a {end_datetime}')
+
     daily_tasks = Tasks.objects.filter(period='daily')
     tasks_list = list(daily_tasks.values('id', 'assigned_to_id', 'created', 'activation_date', 'deactivation_date'))
-    responses_for_daily_tasks = Response.objects.filter(task__in=daily_tasks)
+    responses_for_daily_tasks = Response.objects.filter(task__in=daily_tasks, created_at__range=(start_datetime, end_datetime))
 
     scores = {score.response_scoring_id: score.score for score in Score.objects.filter(response_scoring__in=responses_for_daily_tasks)}
 
