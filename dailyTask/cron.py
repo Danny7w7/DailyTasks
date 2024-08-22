@@ -1,9 +1,6 @@
 # Importaciones de la biblioteca estándar
 import datetime
 
-# Importaciones de Django
-from django.utils import timezone
-
 # Importaciones de bibliotecas de terceros
 import pytz
 from django_cron import CronJobBase, Schedule
@@ -23,7 +20,7 @@ class MarkDelayedTasksCronJob(CronJobBase):
             tasks = Tasks.objects.all()
             for task in tasks:
                 if task.period == 'daily':
-                    response = Response.objects.filter(task=task, created_at=today, completed=0).first()
+                    response = Response.objects.filter(task=task, created_at=today).first()
 
                     if not response:
                         response = Response()
@@ -34,7 +31,7 @@ class MarkDelayedTasksCronJob(CronJobBase):
                         response.delayed = True
                         response.save()
                         response = response
-                    else:
+                    elif response.completed == 0:
                         response.delayed = True
                         response.save()
 

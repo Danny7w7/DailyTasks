@@ -75,7 +75,7 @@
                                             {{ latest_responses|get_item:task.id|get_item:'response_text'|default:'' }}
                                         </td>
                                         <td>
-                                            <input id="score{{ task.id }}" name="score{{ task.id }}" class="custom-input" type="number" value="{{ latest_responses|get_item:task.id|get_item:'score'|default:'' }}">
+                                            <input id="score{{ task.id }}" name="score{{ task.id }}" class="custom-input" type="number" min="1" max="10" value="{{ latest_responses|get_item:task.id|get_item:'score'|default:'' }}">
                                         </td>
                                         <td>
                                             <input id="noteAdmin{{ task.id }}" name="noteAdmin{{ task.id }}" class="custom-input" type="text" value="{{ latest_responses|get_item:task.id|get_item:'admin_note'|default:'' }}">
@@ -126,7 +126,8 @@
                                     <th></th>
                                     <th class="dark-blue-2 text-table border-top-left-radius">Completed</th>
                                     <th class="dark-blue-2 text-table">Notes</th>
-                                    <th class="dark-blue-2 text-table border-top-right-radius">Score</th>
+                                    <th class="dark-blue-2 text-table">Score</th>
+                                    <th class="dark-blue-2 text-table border-top-right-radius">Admin Notes</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
@@ -142,7 +143,10 @@
                                                 <input id="noteTask{{ task.id }}" disabled name="noteTask{{ task.id }}" class="custom-input" type="text" value="{{ latest_responses|get_item:task.id|get_item:'response_text'|default:'' }}">
                                             </td>
                                             <td>
-                                                <input id="score{{ task.id }}" name="score{{ task.id }}" class="custom-input" type="number" value="{{ latest_responses|get_item:task.id|get_item:'score'|default:'' }}">
+                                                <input id="score{{ task.id }}" name="score{{ task.id }}" class="custom-input" type="number" max="10" min="1" value="{{ latest_responses|get_item:task.id|get_item:'score'|default:'' }}">
+                                            </td>
+                                            <td>
+                                                <input id="noteAdmin{{ task.id }}" name="noteAdmin{{ task.id }}" class="custom-input" type="text" value="{{ latest_responses|get_item:task.id|get_item:'admin_note'|default:'' }}">
                                             </td>
                                         </tr>
                                     {% endif %}

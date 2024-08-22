@@ -2,6 +2,7 @@
 import re
 from datetime import datetime, time, timedelta, date
 
+
 # Importaciones de Django
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -46,7 +47,7 @@ def logout_(request):
 
 @login_required(login_url='/login')
 def index(request):
-    print(make_password('360E6rrmvktf'))
+    print(make_password('admin'))
     if request.user.is_superuser:
         return redirect(dashboard)
     today = timezone.now().astimezone(pytz.timezone('America/Bogota')).date()
@@ -391,7 +392,6 @@ def score_response(request, username, period):
         end_datetime = timezone.make_aware(datetime.combine(end_date, time.max))
 
     for key, value in request.POST.items():
-        print(key, ' ', value)
         if re.match(r'^checkTask\d+$', key) or key == 'csrfmiddlewaretoken' or key == 'dateDaily' or key == 'dateWeekly':
             continue
         task = Tasks.objects.get(id=extract_numbers(key))
@@ -413,21 +413,18 @@ def score_response(request, username, period):
         note.scored_by = request.user
         note.response_scoring = response
         note.scored_date = datecomp
-        note.save()
+        if note.score:
+            note.save()
 
     return redirect(scoring_task, period, username)
 
 @csrf_exempt
 def make_main_chart(request):
-    current_date = timezone.now().date()
-
     users = Users.objects.filter(is_superuser=0)
     users_list = list(users.values('id', 'username'))
 
     responses = {}
-
-    start_datetime = timezone.make_aware(datetime.combine(current_date, time.min))
-    end_datetime = timezone.make_aware(datetime.combine(current_date, time.max))
+    start_datetime, end_datetime = get_current_week_range()
     print(f'De {start_datetime} a {end_datetime}')
 
     daily_tasks = Tasks.objects.filter(period='daily')
@@ -470,7 +467,7 @@ def extract_numbers(string):
 
 def get_current_week_range(time=None):
     if time is None:
-        today = timezone.now().astimezone(pytz.timezone('America/Bogota')).date()
+        today = timezone.now().date()
     else:
         today = time.date() if isinstance(time, datetime) else time
     week_start = today - timedelta(days=today.weekday())  # Monday of this week
