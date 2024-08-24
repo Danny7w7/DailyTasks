@@ -55,7 +55,7 @@
                 <div class="col-12">
                     <p class="text-dark-blue">{{user.first_name}} {{user.last_name}} - {{user.legend}}</p>
                 </div>
-                <form action="" method="post">
+                <form class="taskForm" action="" method="post">
                     {% csrf_token %}
                     <div class="col-12 table-responsive">
                         <table class="table1 table-list">
@@ -147,7 +147,7 @@
                     <div class="modal-body">
                         <h4 class="mb-4 text-center text-dark-blue"><strong>Pending Tasks</strong></h4>
                         <div class="container-fluid">
-                            <form action="{% url 'response_pending_tasks' %}" method="POST">
+                            <form class="taskForm" action="{% url 'response_pending_tasks' %}" method="POST">
                                 {% csrf_token %}
                                 <div class="col-12 table-responsive">
                                     <table class="table2 table-list">
@@ -208,6 +208,27 @@
 
             // Establecer el valor del input
             document.getElementById('inputDateTasks').value = today;
+        </script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            const taskForms = document.querySelectorAll('.taskForm');
+
+            taskForms.forEach(taskForm => {
+                taskForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+            
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Your text has been successfully added.',
+                        icon: 'success',
+                        confirmButtonText: 'Accept'
+                    }).then(() => {
+                        event.target.submit();
+                    });
+                });
+            });
         </script>
     </body>
 </html>
