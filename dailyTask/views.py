@@ -215,7 +215,7 @@ def manage_tasks(request):
 
 @login_required(login_url='/login')
 def scoring_task(request, username, period):
-    if not request.user.is_superuser:
+    if not request.user.is_staff:
         return redirect(index)
     if request.method == 'POST':
         return score_response(request, username, period)
