@@ -48,7 +48,7 @@
                     <p class="line mt-3"></p>
                 </div>
                 <form id="formTasks" method="post">
-                    <input hidden type="date" id="inputDateDailyHidden" class="form-control form-control-sm" name="dateDaily"/>
+                    <input  type="date" id="inputDateDailyHidden" class="form-control form-control-sm" name="dateDaily"/>
                     {% csrf_token %}
                     <div class="col-12 table-responsive">
                         <table id="table_body" class="table-list table2">
@@ -116,7 +116,7 @@
                     <p class="line mt-3"></p>
                 </div>
                 <form id="formTasks" method="POST">
-                    <input hidden type="date" id="inputDateWeeklyHidden" class="form-control form-control-sm" name="dateWeekly"/>
+                    <input  type="date" id="inputDateWeeklyHidden" class="form-control form-control-sm" name="dateWeekly"/>
                     {% csrf_token %}
                     <div class="col-12 table-responsive">
                         <table class="table-list">
@@ -129,7 +129,7 @@
                                     <th class="dark-blue-2 text-table border-top-right-radius">Admin Notes</th>
                                 </tr>
                             </thead>
-                            <tbody id="table_body">
+                            <tbody id="table_body_weekly">
                                 {% for task in tasks %}
                                     {% if task.is_active and task.period == 'weekly' %}
                                         <tr id="taskRowID{{task.id}}">

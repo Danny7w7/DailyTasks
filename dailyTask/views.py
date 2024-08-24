@@ -425,7 +425,6 @@ def make_main_chart(request):
 
     responses = {}
     start_datetime, end_datetime = get_current_week_range()
-    print(f'De {start_datetime} a {end_datetime}')
 
     daily_tasks = Tasks.objects.filter(period='daily')
     tasks_list = list(daily_tasks.values('id', 'assigned_to_id', 'created', 'activation_date', 'deactivation_date'))

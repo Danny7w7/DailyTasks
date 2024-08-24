@@ -64,7 +64,7 @@
                     <h4 class="text-dark-blue text-center mt-4 line"><strong>Tasks manager</strong></h4>
                 </div>
                 {% for user in users %}
-                {% if not user.is_staff %}
+                {% if not user.is_superuser %}
                 <div class="col-6 col-md-3 mb-3"> 
                     <button type="button" class="btn dark-blue-2 text-table ps-5 pe-5" data-bs-toggle="modal" data-bs-target="#modalUserID{{user.id}}">{{user.first_name}} {{user.last_name}}</button>
                 </div>
@@ -78,7 +78,7 @@
         
         <!-- Modal Body -->
         {% for user, tasks in user_tasks.items %}
-        {% if not user.is_staff %}
+        {% if not user.is_superuser %}
         <div class="modal fade" id="modalUserID{{user.id}}" tabindex="-1"  data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true" >
             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document" >
                 <div class="modal-content">
