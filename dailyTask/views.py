@@ -180,7 +180,7 @@ def response_pending_tasks(request):
 
 @login_required(login_url='/login')
 def dashboard(request):
-    if not request.user.is_superuser:
+    if not request.user.is_staff:
         return redirect(index)
     context = {
         'users':Users.objects.filter(is_superuser=0)
@@ -189,7 +189,7 @@ def dashboard(request):
 
 @login_required(login_url='/login')
 def manage_tasks(request):
-    if not request.user.is_superuser:
+    if not request.user.is_staff:
         return redirect(index)
     if request.method == 'POST':
         task = Tasks()

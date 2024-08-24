@@ -20,10 +20,14 @@
     <body class="dark-blue container-fluid nunito-font">
         <header class="container-fluid">
             <div class="row light-sky-blue ms-0 mt-1 mt-md-3 me-0 p-1 p-md-4 rounded-top-5">
-                <div class="d-flex col justify-content-end">
-                    <a class="text_decoration_none" href="{% url 'logout' %}">
-                        <span class="material-symbols-outlined">logout</span>
+                <div class="d-flex col-1 justify-content-start">
+                    {% if user.is_staff %}
+                    <a class="text_decoration_none" href="{% url 'dashboard' %}">
+                        <span class="material-symbols-outlined">dashboard</span>
                     </a>
+                    {% endif %}
+                </div>
+                <div class="d-flex col justify-content-end">
                     {% if delayed_responses %}
                     <a class="text_decoration_none" data-bs-toggle="modal" data-bs-target="#delayedTasks">
                         <span class="material-symbols-outlined">notifications_unread</span>
@@ -33,6 +37,9 @@
                         <span class="material-symbols-outlined">notifications</span>
                     </a>
                     {% endif %}
+                    <a class="text_decoration_none" href="{% url 'logout' %}">
+                        <span class="material-symbols-outlined">logout</span>
+                    </a>
                 </div>
                 <div class="col-12">
                     <h4 class="text-dark-blue text-center mt-4 line"><strong>Task Checklist</strong></h4>
